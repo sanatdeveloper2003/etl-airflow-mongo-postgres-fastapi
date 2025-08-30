@@ -26,21 +26,22 @@ This project was created as part of a portfolio for **Data Engineer / Data Analy
 ---
 
 ## 🏗 Project Structure
-```
 .
-├── airflow/               # Airflow DAGs
-│   └── dags/
-│       └── etl_csv_to_mongo_postgres.py
-├── fastapi/               # FastAPI app (app.py)
-├── sql/                   # Init scripts for Postgres warehouse
-│   └── init_warehouse.sql
-├── data/                  # Sample CSV data
-│   └── sample.csv
-├── docker-compose.yml      # Docker services
-├── .env.example            # Example environment config
+├── airflow/ # Airflow DAGs
+│ └── dags/
+│ └── etl_csv_to_mongo_postgres.py
+├── fastapi/ # FastAPI app (app.py)
+├── sql/ # Init scripts for Postgres warehouse
+│ └── init_warehouse.sql
+├── data/ # Sample CSV data
+│ └── sample.csv
+├── docker-compose.yml # Docker services
+├── .env.example # Example environment config
 ├── .gitignore
 └── LICENSE
-```
+
+yaml
+Copy code
 
 ---
 
@@ -50,65 +51,48 @@ This project was created as part of a portfolio for **Data Engineer / Data Analy
 ```bash
 git clone git@github.com:sanatdeveloper2003/etl-airflow-mongo-postgres-fastapi.git
 cd etl-airflow-mongo-postgres-fastapi
-```
-
-### 2. Copy `.env.example`
-```bash
+2. Copy .env.example
+bash
+Copy code
 cp .env.example .env
-```
-
-### 3. Start all services
-```bash
+3. Start all services
+bash
+Copy code
 docker compose up -d
-```
+4. Access services
+Airflow UI → http://localhost:8080
+(login: admin, password: admin)
 
-### 4. Access services
-- **Airflow UI** → [http://localhost:8080](http://localhost:8080)  
-  (login: `admin`, password: `admin`)  
-- **FastAPI Swagger** → [http://localhost:8000/docs](http://localhost:8000/docs)
+FastAPI Swagger → http://localhost:8000/docs
 
----
-
-## 📊 Example API calls
-
+📊 Example API calls
 Health check:
-```bash
+
+bash
+Copy code
 curl http://localhost:8000/health
-```
-
 Get data from MongoDB:
-```bash
+
+bash
+Copy code
 curl http://localhost:8000/mongo/items
-```
-
 Get data from Postgres warehouse:
-```bash
+
+bash
+Copy code
 curl http://localhost:8000/warehouse/items
-```
+🧩 Airflow DAG
+The DAG etl_csv_to_mongo_postgres.py:
 
----
+Reads data/sample.csv
 
-## 🧩 Airflow DAG
-The DAG `etl_csv_to_mongo_postgres.py`:
-1. Reads `data/sample.csv`  
-2. Loads rows into **MongoDB**  
-3. Loads rows into **Postgres warehouse**  
+Loads rows into MongoDB
 
----
+Loads rows into Postgres warehouse
 
-## 📸 Screenshots
-- ✅ Airflow DAG in UI  
-- ✅ FastAPI Swagger docs  
-- ✅ Example query results  
 
-(*add screenshots here after running the project locally*)
+📜 License
+MIT License © 2025 Sanat Zhengis
 
----
-
-## 📜 License
-MIT License © 2025 [Sanat Zhengis](https://github.com/sanatdeveloper2003)
-
----
-
-## 🤝 Contributing
+🤝 Contributing
 Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
