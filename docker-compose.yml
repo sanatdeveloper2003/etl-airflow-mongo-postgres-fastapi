@@ -1,0 +1,76 @@
+services:
+  airflow-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airflow -d airflow"]
+      interval: 5s
+      retries: 10
+
+  airflow:
+    image: apache/airflow:2.9.2
+    depends_on:
+      - airflow-db
+      - warehouse-db
+      - mongo
+    env_file:
+      - .env
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db:5432/airflow
+      AIRFLOW__WEBSERVER__RBAC: "True"
+      _PIP_ADDITIONAL_REQUIREMENTS: ""
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/requirements.txt:/opt/airflow/requirements.txt
+      - ./data:/opt/airflow/data
+
+    command:
+      - bash
+      - -c
+      - >
+        pip install -r /opt/airflow/requirements.txt &&
+        airflow db init &&
+        airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com --password admin || true &&
+        airflow webserver &
+        airflow scheduler
+
+    ports:
+      - "8080:8080"
+
+  warehouse-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: ${WAREHOUSE_USER}
+      POSTGRES_PASSWORD: ${WAREHOUSE_PASSWORD}
+      POSTGRES_DB: ${WAREHOUSE_DB}
+    volumes:
+      - ./sql/init_warehouse.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+
+  fastapi:
+    image: python:3.11-slim
+    depends_on:
+      - warehouse-db
+      - mongo
+    working_dir: /app
+    volumes:
+      - ./fastapi:/app
+
+    command:
+      - bash
+      - -c
+      - >
+        pip install fastapi uvicorn psycopg2-binary pymongo &&
+        uvicorn app:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"

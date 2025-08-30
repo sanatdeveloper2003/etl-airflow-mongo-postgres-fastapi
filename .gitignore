@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+
+# Virtual env
+.env
+.venv
+venv/
+ENV/
+
+# Airflow logs
+airflow/logs/
+
+# Docker
+*.log
+*.pid
+*.sock
+*.tmp
+*.swp
+.docker/
+docker-compose.override.yml
+
+# System files
+.DS_Store
+.idea/
+.vscode/
